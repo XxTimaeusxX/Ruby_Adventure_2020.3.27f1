@@ -19,6 +19,9 @@ public class RubyController : MonoBehaviour
     Vector2 lookDirection = new Vector2(1,0);// currebt idle position to tell the state machine.
 
     public GameObject projectilePrefab;
+    public ParticleSystem damageEffect;
+    public ParticleSystem healthEffect;
+    
      AudioSource audioSource;
      public AudioClip hitsound;
      public AudioClip launchSound;
@@ -35,26 +38,39 @@ public class RubyController : MonoBehaviour
     public void PLaySound(AudioClip clip)
     {
         audioSource.PlayOneShot(clip);
+        
     }
     void Update()
     {
          horizontal = Input.GetAxis("Horizontal");
          vertical = Input.GetAxis("Vertical");
          Vector2 move = new Vector2(horizontal, vertical);
-         if(!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f))// mathf: use floats, approx: ranges values from x or y
+         if(!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f))// mathf: use floats calculations, approx: ranges values from x or y
          {
             lookDirection.Set(move.x, move.y);
             lookDirection.Normalize();// resizes value ranges from -1 to 1
+            if(!audioSource.isPlaying)
+            {
+                PLaySound(runningSound);
+               
+            }
+           
+            
          }
+         
+         
          animator.SetFloat("Look X", lookDirection.x);
          animator.SetFloat("Look Y", lookDirection.y);
          animator.SetFloat("Speed", move.magnitude);
          if(isInvincible)// when damaged 
          {
+            
             invincibleTimer -= Time.deltaTime; // timer value from change health
             if(invincibleTimer<0)
             isInvincible =false;
+          
          }
+         
          if(Input.GetKeyDown(KeyCode.C))// throw 
          {
             Launch();
@@ -86,14 +102,21 @@ public class RubyController : MonoBehaviour
     {
         if(amount < 0)//returning that -1 value from damage zone script (-1 < 0)
         {
-            animator.SetTrigger("Hit");// play hit animation when amount value is damage(-1)
             
+            animator.SetTrigger("Hit");// play hit animation when amount value is damage(-1)
+            damageEffect.Play();
             if(isInvincible)// activate invincibility
             return; 
             isInvincible=true;
             invincibleTimer = timeInvincible; // timer 2 sec cd
             PLaySound(hitsound);
+            
         }
+        if(amount > 0)
+        {
+            healthEffect.Play();
+        }
+       
         currentHealth = Mathf.Clamp(currentHealth + amount,0,maxHealth);// math.clamp = set health ranges 0-5 
         
         UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
@@ -104,6 +127,8 @@ public class RubyController : MonoBehaviour
     Projectile projectile = projectileObject.GetComponent<Projectile>();
     projectile.Launch(lookDirection,300);
     animator.SetTrigger("Launch");
-    PLaySound(launchSound);                                        
+    PLaySound(launchSound); 
+    
+                                                   
    }
 }

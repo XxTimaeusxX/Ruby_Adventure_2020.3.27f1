@@ -13,11 +13,19 @@ public class Enemycontroller : MonoBehaviour
     bool broken = true;
     Animator animator;
     public ParticleSystem smokeEffect;
+    
+    public AudioClip fixedSound;
+   
+   
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;// timer is 3 sec
         animator = GetComponent<Animator>();
+        
+    
+       
+       
     }
 
     // Update is called once per frame
@@ -68,10 +76,14 @@ public class Enemycontroller : MonoBehaviour
     }
     public void Fix()
     {
+        
         broken = false;
         rigidbody2D.simulated = false;
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
-       //Destroy(smokeEffect.gameObject);
+       GetComponent<AudioSource>().PlayOneShot(fixedSound);
+       
+        
     }
+ 
 }

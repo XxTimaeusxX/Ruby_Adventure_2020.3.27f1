@@ -53,5 +53,5 @@
         "Temp/": true
     },
     "dotnet.preferCSharpExtension": true,
-    "dotnet.defaultSolution": "Ruby's Adventure 2d.sln"
+    "dotnet.defaultSolution": "Ruby_Adventure_2020.3.27f1.sln"
 }

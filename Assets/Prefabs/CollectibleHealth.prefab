@@ -123,3 +123,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectedClip: {fileID: 8300000, guid: af5f8b64e3f58f24c87ff8f789b04f6c, type: 3}
+  healthEffect: {fileID: 2377320688215922337, guid: 539eb2e0503930a4d84bd222b1193e0a, type: 3}

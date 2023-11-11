@@ -6,6 +6,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     Rigidbody2D rigidbody2D;
+     
     void Awake()// awake= instantiate immediate
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -29,9 +30,13 @@ public class Projectile : MonoBehaviour
         Enemycontroller e = other.collider.GetComponent<Enemycontroller>();// when disc touches robots collider
         if(e !=null)
         {
+            
             e.Fix();
+
+        
         }
         Destroy(gameObject);
+       
     }
-    
+
 }
