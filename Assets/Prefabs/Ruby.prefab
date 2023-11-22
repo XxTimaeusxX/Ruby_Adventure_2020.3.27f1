@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1022559073}
   m_Layer: 8
   m_Name: Ruby
-  m_TagString: Untagged
+  m_TagString: RubyPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,9 @@ MonoBehaviour:
   speed: 3
   maxHealth: 5
   timeInvincible: 2
+  score: 0
   projectilePrefab: {fileID: 6638684616776885307, guid: 685ed1ed29b17bd409beea12f045ca18, type: 3}
+  scoreText: {fileID: 0}
   damageEffect: {fileID: 8183942978786544050}
   healthEffect: {fileID: 4952895419208941241}
   hitsound: {fileID: 8300000, guid: 9b1bb1f450b7d444fa4a8019d13519a7, type: 3}

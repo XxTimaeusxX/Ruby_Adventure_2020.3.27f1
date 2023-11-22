@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemycontroller : MonoBehaviour
 {
+    private RubyController rubycontrol;
     public float speed;
     public bool vertical; //switch sides
     public float changeTime = 3.0f;// sec for side change
@@ -22,6 +23,16 @@ public class Enemycontroller : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;// timer is 3 sec
         animator = GetComponent<Animator>();
+        GameObject rubyControllerObject = GameObject.FindWithTag("RubyPlayer");
+        if(rubyControllerObject !=null)
+        {
+            rubycontrol = rubyControllerObject.GetComponent<RubyController>();
+            Debug.Log("detecting the ruby controller script");
+        }
+        if(rubycontrol ==null)
+        {
+           Debug.Log("not detecting the ruby controller script");
+        }
         
     
        
@@ -82,8 +93,12 @@ public class Enemycontroller : MonoBehaviour
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
        GetComponent<AudioSource>().PlayOneShot(fixedSound);
+     
+        if(rubycontrol !=null)
+    {
+           rubycontrol.ChangeScore(1);   
+    }
        
-        
     }
  
 }

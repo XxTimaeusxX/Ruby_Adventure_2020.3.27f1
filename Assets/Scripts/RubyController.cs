@@ -1,6 +1,9 @@
 
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class RubyController : MonoBehaviour
 {
@@ -9,8 +12,10 @@ public class RubyController : MonoBehaviour
     public float timeInvincible = 2.0f;
     int currentHealth;
     public int health{get { return currentHealth; }}// property: a shell{} to transfer computations of{currentHealth}
+    public int score;
      
      bool isInvincible;
+     bool gameover =false;
      float invincibleTimer;
     Rigidbody2D rigidbody2d;
     float horizontal;
@@ -19,6 +24,8 @@ public class RubyController : MonoBehaviour
     Vector2 lookDirection = new Vector2(1,0);// currebt idle position to tell the state machine.
 
     public GameObject projectilePrefab;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI resultText;
     public ParticleSystem damageEffect;
     public ParticleSystem healthEffect;
     
@@ -29,6 +36,7 @@ public class RubyController : MonoBehaviour
     
     void Start()
     {
+        resultText.enabled =false;
         animator = GetComponent<Animator>();
         rigidbody2d = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth; 
@@ -41,7 +49,8 @@ public class RubyController : MonoBehaviour
         
     }
     void Update()
-    {
+    {  
+         scoreText.text = "Fixed Robots: " + score.ToString();
          horizontal = Input.GetAxis("Horizontal");
          vertical = Input.GetAxis("Vertical");
          Vector2 move = new Vector2(horizontal, vertical);
@@ -88,6 +97,26 @@ public class RubyController : MonoBehaviour
                 }
             }
          }
+         if(score==3)
+          {
+           resultText.enabled= true;
+           resultText.text = "You win Group 34";
+          } 
+         if(currentHealth==0)
+          {
+           speed =0f; 
+           gameObject.GetComponent<SpriteRenderer>().enabled =false;
+           gameObject.GetComponent<Animator>().enabled =false;
+           gameover = true;
+           resultText.enabled = true;
+           resultText.text = "Game over Press r to restart";
+           
+          }
+          if(Input.GetKey(KeyCode.R))
+            {
+              if(gameover ==true)
+              SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
     }
     
     void FixedUpdate()
@@ -98,17 +127,19 @@ public class RubyController : MonoBehaviour
         rigidbody2d.MovePosition(position);
         
     }
-    public  void  ChangeHealth(int amount)// amount has -1 value
+    public void ChangeHealth(int amount)// amount has -1 value
     {
         if(amount < 0)//returning that -1 value from damage zone script (-1 < 0)
         {
             
             animator.SetTrigger("Hit");// play hit animation when amount value is damage(-1)
-            damageEffect.Play();
             if(isInvincible)// activate invincibility
-            return; 
+            {
+            return;
+            } 
             isInvincible=true;
             invincibleTimer = timeInvincible; // timer 2 sec cd
+            damageEffect.Play();
             PLaySound(hitsound);
             
         }
@@ -121,14 +152,20 @@ public class RubyController : MonoBehaviour
         
         UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
     }
+    public void ChangeScore(int scoreAmount)
+   {
+    if(scoreAmount > 0)
+    {
+     score++;
+    }
+   }
    void Launch()
    {
     GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f,Quaternion.identity);
     Projectile projectile = projectileObject.GetComponent<Projectile>();
     projectile.Launch(lookDirection,300);
     animator.SetTrigger("Launch");
-    PLaySound(launchSound); 
-    
-                                                   
+    PLaySound(launchSound);                                             
    }
+   
 }
