@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
-  vertical: 0
+  vertical: 1
   changeTime: 3
   smokeEffect: {fileID: 2178318343202447739}
   fixedSound: {fileID: 8300000, guid: e7fa1971a86d60945bb64585c0ac14d5, type: 3}

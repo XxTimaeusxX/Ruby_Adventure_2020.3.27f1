@@ -107,11 +107,13 @@ MonoBehaviour:
   score: 0
   projectilePrefab: {fileID: 6638684616776885307, guid: 685ed1ed29b17bd409beea12f045ca18, type: 3}
   scoreText: {fileID: 0}
+  resultText: {fileID: 0}
   damageEffect: {fileID: 8183942978786544050}
   healthEffect: {fileID: 4952895419208941241}
   hitsound: {fileID: 8300000, guid: 9b1bb1f450b7d444fa4a8019d13519a7, type: 3}
   launchSound: {fileID: 8300000, guid: b2edfd40873655249ba0e01a5cf705be, type: 3}
   runningSound: {fileID: 8300000, guid: a20c77ecd5de9eb4a98731b45ad84c3e, type: 3}
+  fixSound: {fileID: 8300000, guid: e7fa1971a86d60945bb64585c0ac14d5, type: 3}
 --- !u!50 &5957975884762063998
 Rigidbody2D:
   serializedVersion: 4

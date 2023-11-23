@@ -92,8 +92,8 @@ public class Enemycontroller : MonoBehaviour
         rigidbody2D.simulated = false;
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
-       GetComponent<AudioSource>().PlayOneShot(fixedSound);
-     
+        rubycontrol.PLaySound(fixedSound);
+
         if(rubycontrol !=null)
     {
            rubycontrol.ChangeScore(1);   
