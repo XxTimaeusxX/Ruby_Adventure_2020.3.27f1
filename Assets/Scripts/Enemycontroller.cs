@@ -9,13 +9,16 @@ public class Enemycontroller : MonoBehaviour
     public bool vertical; //switch sides
     public float changeTime = 3.0f;// sec for side change
     Rigidbody2D rigidbody2D;
-    float timer; // value containing the tinmer
+    float timer; 
     int direction = 1; // the space range amount 
     bool broken = true;
+    public int enemyMaxHealth = 1;/////////Ovidio enemy maxhealth value///////////
+    int EnemyHealth;///////////////Ovidio enemy health variable//////////
     Animator animator;
-    public ParticleSystem smokeEffect;
+    [SerializeField] ParticleSystem smokeEffect;
     
-    public AudioClip fixedSound;
+    [SerializeField] AudioClip fixedSound;
+    [SerializeField] AudioClip enemydeadsound;///////////Carlos sound prefabs for the new robot and monster//////
    
    
     void Start()
@@ -23,6 +26,7 @@ public class Enemycontroller : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;// timer is 3 sec
         animator = GetComponent<Animator>();
+        EnemyHealth = enemyMaxHealth;///////Ovidio adding value for health in inspector///////
         GameObject rubyControllerObject = GameObject.FindWithTag("RubyPlayer");
         if(rubyControllerObject !=null)
         {
@@ -51,6 +55,20 @@ public class Enemycontroller : MonoBehaviour
         {
             direction = -direction;// change direction
             timer = changeTime; // restart 3 sec
+        }
+        if(EnemyHealth==0)//////////Ovidio enemy health gets to zero/////////
+        {
+           
+            if(this.CompareTag("BotEnemy"))//////////Ovidio fix robot/////////////
+            {
+               Fix();
+            }
+            if(this.CompareTag("NewEnemy"))//////////Ovidio destroy new enemy and +1 the score count////////
+            {
+               Destroy(gameObject);
+               rubycontrol.Killscore(1);///////////Ovidio killscore function from ruby//////
+               rubycontrol.PLaySound(enemydeadsound);///////// Carlos robot/ monster sound////////////////
+            }
         }
     }
     void FixedUpdate()
@@ -84,6 +102,16 @@ public class Enemycontroller : MonoBehaviour
         {
             player.ChangeHealth(-1);
         }
+    }
+    public void ChangeEnemyHealth( int EnemyAmount)////////Ovidio health for the robots and monsters/////////
+    {
+        if(EnemyAmount<0)
+        {
+          
+          Debug.Log(EnemyHealth);
+        }
+        
+        EnemyHealth = Mathf.Clamp( EnemyHealth + EnemyAmount,0,enemyMaxHealth);
     }
     public void Fix()
     {

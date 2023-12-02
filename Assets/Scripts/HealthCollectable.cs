@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthCollectable : MonoBehaviour
 {
-    public AudioClip collectedClip;
+    [SerializeField] AudioClip collectedClip;
   
 void OnTriggerStay2D(Collider2D other)
 {
@@ -16,6 +16,7 @@ void OnTriggerStay2D(Collider2D other)
            controller.ChangeHealth(1);
            Destroy(gameObject);
            controller.PLaySound(collectedClip);
+           
         }
     }
 

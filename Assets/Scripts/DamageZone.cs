@@ -10,7 +10,8 @@ public class DamageZone : MonoBehaviour
         RubyController controller = other.GetComponent<RubyController>();// mentioning ruby class script inside this function
         if(controller !=null)// apply damage value
         {
-            controller.ChangeHealth(-1); // changehealth( int amount = -1)
+            controller.ChangeHealth(-1); // changehealth( int amount = -1) 
+            
         }
     }
 }

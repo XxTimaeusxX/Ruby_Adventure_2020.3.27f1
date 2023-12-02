@@ -13,6 +13,7 @@ public class RubyController : MonoBehaviour
     int currentHealth;
     public int health{get { return currentHealth; }}// property: a shell{} to transfer computations of{currentHealth}
     public int score;
+    public int kills;
      
      bool isInvincible;
      bool gameover =false;
@@ -24,15 +25,23 @@ public class RubyController : MonoBehaviour
     Vector2 lookDirection = new Vector2(1,0);// currebt idle position to tell the state machine.
 
     public GameObject projectilePrefab;
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI resultText;
-    public ParticleSystem damageEffect;
-    public ParticleSystem healthEffect;
+    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI KillText;////////////Ovidio killscore prefab//////
+    [SerializeField] TextMeshProUGUI resultText;
+    [SerializeField] ParticleSystem damageEffect;
+    [SerializeField] ParticleSystem healthEffect;
+    
     
      AudioSource audioSource;
-     public AudioClip hitsound;
-     public AudioClip launchSound;
-     public AudioClip runningSound;
+     [SerializeField] AudioClip hitsound;
+     [SerializeField] AudioClip launchSound;
+     [SerializeField] AudioClip runningSound;
+     [SerializeField] AudioClip winSound;////////////// Carlos win sound//////////////
+     [SerializeField] AudioClip loseSound;//////////// Carlos lose sound///////////////
+     [SerializeField] AudioClip timerOn;//////////// Ovidio timer sound on///////////
+     [SerializeField] AudioClip timerOff;////////// Ovidio timer sound off////////////
+
+     private TimeScript timeFunction;////////Ovidio Variable for the Timescript//////////
     
     
     void Start()
@@ -42,6 +51,12 @@ public class RubyController : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth; 
         audioSource= GetComponent<AudioSource>();
+        GameObject TimerObject = GameObject.FindWithTag("Timer");//////// Ovidio detecting the UI text with a "timer" tag//////////
+        if(TimerObject!=null)////////// Ovidio when it finds it it will grab all components/ variables / functions from the TimeScript and add it as new variable called timefunction/////////////////
+        {
+            timeFunction = TimerObject.GetComponent<TimeScript>();
+        }
+       
     }
 
     public void PLaySound(AudioClip clip)
@@ -52,6 +67,7 @@ public class RubyController : MonoBehaviour
     void Update()
     {  
          scoreText.text = "Fixed Robots: " + score.ToString();
+         KillText.text = "Enemy kills:" + kills.ToString();//////////////// Ovidio formatting the text to display when the game starts///////////
          horizontal = Input.GetAxis("Horizontal");
          vertical = Input.GetAxis("Vertical");
          Vector2 move = new Vector2(horizontal, vertical);
@@ -65,7 +81,7 @@ public class RubyController : MonoBehaviour
                
             }
            
-            
+
          }
          
          
@@ -88,7 +104,8 @@ public class RubyController : MonoBehaviour
          if(Input.GetKeyDown(KeyCode.X))// interact
          {
             RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NPC"));
-            if(hit.collider !=null)// if raycast hit
+            RaycastHit2D NewNpcHit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NewNpc"));////// new raycast for a new npc //////////
+            if (hit.collider != null)// if raycast hit
             {
                 Debug.Log("Raycast has hit the object " + hit.collider.gameObject);
                 NonPlayerCharacter character = hit.collider.GetComponent<NonPlayerCharacter>();// activate script behavior
@@ -96,12 +113,36 @@ public class RubyController : MonoBehaviour
                 {
                     character.DisplayDialog();
                 }
+               
+            }
+            if (NewNpcHit.collider != null)///////////// Detecting newnpc collider and grabbing the function script//////////
+            {
+                Debug.Log("Raycast has hit " + NewNpcHit.collider.gameObject);
+                NonPlayerCharacter NewNpccharacter = NewNpcHit.collider.GetComponent<NonPlayerCharacter>();
+                if(NewNpccharacter != null)
+                {
+                    NewNpccharacter.DisplayDialog();
+                }
+               
             }
          }
-         if(score==3)
+         if(Input.GetKeyDown(KeyCode.Alpha1))///// Ovidio turn timer on 1 input button//////
+         {
+            rubyTimerOn();
+            PLaySound(timerOn);
+         }
+         if(Input.GetKeyDown(KeyCode.Alpha2))////Ovidio turn timer off 2 input button/////
+         {
+            rubyTimerOff();
+            PLaySound(timerOff);
+         }
+         if(score == 3 && kills == 3)/////////Ovidio requirments to beat the game: have enough kills and fix certain amount of robots/////////
           {
+           timeFunction.TimerActive =false;
            resultText.enabled= true;
            resultText.text = "You win Group 34";
+           
+          PLaySound(winSound);/////////////Carlos win sound///////////
           } 
          if(currentHealth==0)
           {
@@ -111,13 +152,14 @@ public class RubyController : MonoBehaviour
            gameover = true;
            resultText.enabled = true;
            resultText.text = "Game over Press r to restart";
-           
+           PLaySound(loseSound);//////////////Carlos lose sound///////////////
           }
           if(Input.GetKey(KeyCode.R))
             {
               if(gameover ==true)
               SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+
     }
     
     void FixedUpdate()
@@ -128,9 +170,9 @@ public class RubyController : MonoBehaviour
         rigidbody2d.MovePosition(position);
         
     }
-    public void ChangeHealth(int amount)// amount has -1 value
+    public void ChangeHealth(int amount)
     {
-        if(amount < 0)//returning that -1 value from damage zone script (-1 < 0)
+        if(amount < 0)
         {
             
             animator.SetTrigger("Hit");// play hit animation when amount value is damage(-1)
@@ -159,7 +201,15 @@ public class RubyController : MonoBehaviour
     {
      score++;
     }
+    
    }
+   public void Killscore(int killAmount)////////Ovidio new enemy score counter function//////////
+    {
+        if(killAmount>0)///////Ovidio when enemies get destroyed///////////
+        {
+            kills++;////////Ovidio increment score/////////////
+        }
+    }
    void Launch()
    {
     GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f,Quaternion.identity);
@@ -168,5 +218,12 @@ public class RubyController : MonoBehaviour
     animator.SetTrigger("Launch");
     PLaySound(launchSound);                                             
    }
-   
+   public void rubyTimerOn()////Ovidio using the public timerscript function to switch the timer on/////
+   {
+        timeFunction.TimerActive = true;
+   }
+    public void rubyTimerOff()////Ovidio using the public timerscript function to switch the timer off/////
+   {
+        timeFunction.TimerActive = false;
+   }
 }

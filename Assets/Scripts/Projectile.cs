@@ -28,13 +28,16 @@ public class Projectile : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         Enemycontroller e = other.collider.GetComponent<Enemycontroller>();// when disc touches robots collider
-       
-        if(e !=null)
+       if(e !=null)
+       {
+        e.ChangeEnemyHealth(-1);///////////////Ovidio enemy takes damage when hit///////////
+       }
+       /* if(e !=null)
         {
             
             e.Fix();
 
-        }
+        }*/
         Destroy(gameObject);
        
     }

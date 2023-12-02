@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - RubyPlayer
+  - Timer
+  - NewEnemy
+  - BotEnemy
+  - PickupSpeed
   layers:
   - Default
   - TransparentFX
@@ -18,7 +22,7 @@ TagManager:
   - Projectile
   - Confiner
   - NPC
-  - 
+  - NewNpc
   - 
   - 
   - 
